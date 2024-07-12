@@ -8,7 +8,7 @@ var putwait = true;
 
 setup();
 
-function setup(){   //boardを作成
+async function setup(){   //boardを作成
     for( let i = 0 ; i < size ; i++ ){
         var tr = document.createElement("tr");  //tr要素を作成
         board[i] = [];      //i行目に空の配列を作成(新しい行を作成)
@@ -25,6 +25,8 @@ function setup(){   //boardを作成
     replaceimg(3,4,2);
     replaceimg(4,3,2);
     replaceimg(4,4,1);
+    await sleep(500);
+    AI();
 }
 
 async function put(){
@@ -38,15 +40,15 @@ async function put(){
             setgame();
         }
         if(board[i][j]==0){
-            if(check(i,j,1)){
-                replace(i,j,1);
+            if(check(i,j,2)){
+                replace(i,j,2);
                 await sleep(500);
                 AI();
                 if(checkgame()){    //盤面が埋まってるかチェック
                     setgame();
                 }
             }else{
-                if(checkput(i,j,1)){
+                if(checkput(i,j,2)){
                     if(checkgame()){    //盤面が埋まってるかチェック
                         setgame();
                     }
@@ -191,8 +193,8 @@ function AI(){
         for(let i=0;i<size;i++){
             for(let j=0;j<size;j++){
                 if(board[i][j]==0){
-                    if(check(i,j,2)){
-                        count(i,j,2);
+                    if(check(i,j,1)){
+                        count(i,j,1);
                         cntAI++;
                     }
                 }
@@ -202,8 +204,8 @@ function AI(){
         for(let i=7;0<=i;i--){
             for(let j=7;0<=j;j--){
                 if(board[i][j]==0){
-                    if(check(i,j,2)){
-                        count(i,j,2);
+                    if(check(i,j,1)){
+                        count(i,j,1);
                         cntAI++;
                     }
                 }
@@ -213,8 +215,8 @@ function AI(){
         for(let j=0;j<size;j++){
             for(let i=0;i<size;i++){
                 if(board[i][j]==0){
-                    if(check(i,j,2)){
-                        count(i,j,2);
+                    if(check(i,j,1)){
+                        count(i,j,1);
                         cntAI++;
                     }
                 }
@@ -224,8 +226,8 @@ function AI(){
         for(let j=7;0<=j;j--){
             for(let i=7;0<=i;i--){
                 if(board[i][j]==0){
-                    if(check(i,j,2)){
-                        count(i,j,2);
+                    if(check(i,j,1)){
+                        count(i,j,1);
                         cntAI++;
                     }
                 }
@@ -234,7 +236,7 @@ function AI(){
     }
     //console.log(Ai+"　",Aj);
     if(0<cntAI){
-        replace(Ai,Aj,2);
+        replace(Ai,Aj,1);
     }
 }
 
@@ -352,9 +354,9 @@ async function setgame(){
         alert("引き分け！")
     }else{
         if(whitecnt<blackcnt){
-            alert("プレイヤーの勝利！");
-        }else{
             alert("AIの勝利！");
+        }else{
+            alert("プレイヤーの勝利！");
         }
     }
 }
