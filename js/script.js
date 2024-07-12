@@ -56,8 +56,8 @@ async function put(){
         }else{
             return;
         }
-        putwait = true
     }
+    putwait = true
 }
 
 function replaceimg(i,j,c){    //駒を置くメソッド
@@ -143,12 +143,16 @@ function replace(i,j,c){
 }
 
 function replacecell(i,j,cd,v1,v2,c,ec,r1,r2){
+    wc = 0;
     n = i;
     m = j;
     let Myflag = false;
     let ENflag = false;
     while(eval(cd)){
         //console.log(n+"　"+m);
+        if(wc==1&&board[n][m]==c){
+            return;
+        }
         if(board[n][m]==0){
             if(n!=i||m!=j){
                 return false;
@@ -167,8 +171,9 @@ function replacecell(i,j,cd,v1,v2,c,ec,r1,r2){
                 eval(r1);
                 eval(r2);
             }
-            break;
+            return;
         }
+        wc++;
         eval(v1);
         eval(v2);
     }
@@ -181,12 +186,48 @@ var Aj;
 function AI(){
     MAXCNT = 0;
     let cntAI=0;
-    for(let i=0;i<size;i++){
+    let random = Math.floor(Math.random()*4);
+    if(random==1){
+        for(let i=0;i<size;i++){
+            for(let j=0;j<size;j++){
+                if(board[i][j]==0){
+                    if(check(i,j,2)){
+                        count(i,j,2);
+                        cntAI++;
+                    }
+                }
+            }
+        }
+    }else if(random==2){
+        for(let i=7;0<=i;i--){
+            for(let j=7;0<=j;j--){
+                if(board[i][j]==0){
+                    if(check(i,j,2)){
+                        count(i,j,2);
+                        cntAI++;
+                    }
+                }
+            }
+        }
+    }else if(random==3){
         for(let j=0;j<size;j++){
-            if(board[i][j]==0){
-                if(check(i,j,2)){
-                    count(i,j,2);
-                    cntAI++;
+            for(let i=0;i<size;i++){
+                if(board[i][j]==0){
+                    if(check(i,j,2)){
+                        count(i,j,2);
+                        cntAI++;
+                    }
+                }
+            }
+        }
+    }else{
+        for(let j=7;0<=j;j--){
+            for(let i=7;0<=i;i--){
+                if(board[i][j]==0){
+                    if(check(i,j,2)){
+                        count(i,j,2);
+                        cntAI++;
+                    }
                 }
             }
         }
@@ -216,6 +257,9 @@ function count(i,j,c){
         MAXCNT = 64;
         Ai = i;
         Aj = j;
+    }
+    if((i==0&&j==1)||(i==1&&j==0)||(i==1&&j==1)||(i==0&&j==6)||(i==1&&j==7)||(i==1&&j==6)||(i==6&&j==0)||(i==6&&j==1)||(i==7&&j==1)||(i==6&&j==7)||(i==6&&j==6)||(i==7&&j==6)){
+        CNT = 1;
     }
     if(MAXCNT<CNT){
         MAXCNT = CNT;
@@ -264,6 +308,7 @@ function sleep(ms){ //動作にラグを入れるためのもの
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
+//gameが続いてるかどうかを確認
 function checkgame(){
     let blackcnt=0;
     let whitecnt=0;
@@ -289,7 +334,7 @@ function checkgame(){
     }
 }
 
-function setgame(){
+async function setgame(){
     game = false;
     let blackcnt=0;
     let whitecnt=0;
@@ -302,6 +347,7 @@ function setgame(){
             }
         }
     }
+    await sleep(300);
     if(whitecnt==blackcnt){
         alert("引き分け！")
     }else{
@@ -313,7 +359,7 @@ function setgame(){
     }
 }
 
-function checkput(n,m,c){
+function checkput(n,m,c){   //置けるかどうかの確認
     let cnt=0;
     for(let i=0;i<size;i++){
         for(let j=0;j<size;j++){
